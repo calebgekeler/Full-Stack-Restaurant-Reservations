@@ -64,7 +64,7 @@ export function previous(currentDate) {
   date.setDate(date.getDate() - 1);
   return asDateString(date);
 }
-
+//DDMMYYYY
 /**
  * Adds one day to the specified date and return it in as YYYY-MM-DD.
  * @param currentDate

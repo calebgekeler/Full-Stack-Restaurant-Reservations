@@ -13,6 +13,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.options('*', cors()); //told to add by Marko. not sure if this is the right place for it
 
 app.use("/reservations", reservationsRouter);
 
