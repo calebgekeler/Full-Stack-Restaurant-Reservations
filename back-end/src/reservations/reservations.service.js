@@ -1,5 +1,6 @@
 const knex = require("../db/connection");
-const tableName = "reservations"
+const tableName = "reservations";
+
 function list(date){
   return knex(tableName)
   .select("*")

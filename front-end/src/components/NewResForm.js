@@ -20,16 +20,16 @@ function NewResForm(){
   
   let tempDate = new Date(`${resForm.reservation_date}`);
   const dateObj = new Date(`${resForm.reservation_date} GMT${tempDate.getTimezoneOffset === 240 ? -4 : -5}`);
-
+  let error = null;
 
 
   const submitHandler = async (e) =>{
     e.preventDefault();
     const abortController = new AbortController();
     await createReservation(resForm, abortController.signal)
-      .catch(setResErrors);
-    console.log(resErrors)
-    if(resErrors===null){
+      .catch(err => error = err);
+    setResErrors(error);
+    if(error===null){
       setResForm({...intitialFormData});
       history.push(`/dashboard?date=${resForm.reservation_date}`);
     } else{

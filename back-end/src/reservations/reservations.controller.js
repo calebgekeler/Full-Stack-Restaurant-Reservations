@@ -14,6 +14,7 @@ async function list(req, res) {
 
 function validateBody(req, res, next){
   const body = req.body.data;
+  console.log("BODY IN API CONTROLLER", body)
   if(!body){
     next({
       status: 400,
@@ -58,15 +59,12 @@ function validateMobile(req, res, next){
 
 function validateResDate(req, res,  next){
   const date = req.body.data.reservation_date;
-  //console.log("DATE IN VALIDATION", date);
   let year;
   if(date){
     let parts = date.split("-");
     year = Number(parts[0]);
   }
-  //console.log("YEAR", year, typeof year)
   if(!date || isNaN(year) || year<1000){
-    //console.log("DATE FAILED VALIDATION");
     next({
       status: 400,
       message: `reservation_date is invalid`
@@ -80,12 +78,10 @@ function validateResDate(req, res,  next){
 function validateResTime(req, res, next){
   const time = req.body.data.reservation_time;
   let hours;
-  //console.log("TIME", time)
   if(time){
     hours = Number(time.split(":")[0]);
   }
   if(!time || isNaN(hours)){
-    //console.log("TIME FAILED VALIDATION")
     next({
       status: 400,
       message: `reservation_time is invalid`
@@ -108,7 +104,12 @@ function validatePeople(req, res, next){
 function validateDateIsFuture(req, res, next){
   const date = req.body.data.reservation_date;
   let today = new Date();
-  let todayAsStr = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`
+  let todayAsStr = `${today.getFullYear()}
+    -${today.getMonth()+1 < 10 ? `0${today.getMonth()+1}` : today.getMonth()+1}
+    -${today.getDate()<10 ? `0${today.getDate()}` : today.getDate()}`;
+
+  console.log("TODAY FORMATTED" ,todayAsStr);
+  console.log("DATE OF RESERVATION", date);
   if(date < todayAsStr){
     next({
       status: 400,
@@ -122,7 +123,6 @@ function validateDateIsFuture(req, res, next){
 function validateNotTues(req, res, next){
   const tempDate = new Date(res.locals.date);
   const date = new Date(`${res.locals.date} GMT${tempDate.getTimezoneOffset === 240 ? -4 : -5}`);
-  console.log(date.getDay())
   if(date.getDay()===2){
     next({
       status: 400,
