@@ -51,7 +51,7 @@ function Dashboard({ defaultDate }) {
       </div>
       <ErrorAlert error={reservationsError} />
       {buttons}
-      <section>
+      <section className="col col-md-6">
         <ReservationDisplay reservations={reservations}/>
       </section>
     </main>

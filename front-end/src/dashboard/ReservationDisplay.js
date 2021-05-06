@@ -1,14 +1,23 @@
 import React from 'react-router-dom';
 
 function ReservationDisplay({reservations}){
-  return reservations.map((res) =>
-      <article key={res.reservation_id}>
-        <h4>Name: {res.last_name}, {res.first_name}</h4>
-        <p>Mobile number: {res.mobile_number}</p>
-        <p>Time of reservation: {res.reservation_time}</p>
-        <p>Number of people: {res.people}</p>
-        <hr />
-      </article>
+  let result = reservations.map((res) =>
+
+    <div key={res.reservation_id} className="col-lg-6 p-3">
+      <div className="card">
+        <div className="card-body">
+          <h5 className="card-title">{res.last_name}, {res.first_name}</h5>
+          <p className="card-text">Mobile number: {res.mobile_number}</p>
+          <p className="card-text">Time of reservation: {res.reservation_time}</p>
+          <a href={`/reservations/${res.reservation_id}/seat`} className="btn btn-primary">Seat</a>
+        </div>
+      </div>
+    </div>
+  )
+  return(
+    <div className="row">
+      {result}
+    </div>
   )
 }
 

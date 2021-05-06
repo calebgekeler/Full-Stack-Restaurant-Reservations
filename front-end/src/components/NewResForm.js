@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {useHistory} from 'react-router-dom';
 import {createReservation} from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
-import {today} from "../utils/date-time";
+import SubmitCancelBtn from "./SubmitCancelBtn";
 
 function NewResForm(){
   const history = useHistory();
@@ -10,24 +10,22 @@ function NewResForm(){
     first_name: "",
     last_name: "",
     mobile_number: "",
-    reservation_date: today(),
-    reservation_time: "",
+    reservation_date: ``,
+    reservation_time: ``,
     people: 1,
   }
 
   let [resForm, setResForm] = useState({...intitialFormData});
   let [resErrors, setResErrors] = useState(null);
-  
-  let tempDate = new Date(`${resForm.reservation_date}`);
-  const dateObj = new Date(`${resForm.reservation_date} GMT${tempDate.getTimezoneOffset === 240 ? -4 : -5}`);
   let error = null;
-
+  
+  const dateObj = new Date(`${resForm.reservation_date} ${resForm.reservation_time}`); // broken
 
   const submitHandler = async (e) =>{
     e.preventDefault();
     const abortController = new AbortController();
     await createReservation(resForm, abortController.signal)
-      .catch(err => error = err);
+      .catch(err => error = err); // does not handle errors with .catch(setResErrors)
     setResErrors(error);
     if(error===null){
       setResForm({...intitialFormData});
@@ -64,25 +62,44 @@ function NewResForm(){
       resForm.reservation_date.length!==0 &&
       resForm.reservation_time.length!==0 &&
       resForm.people > 0 &&
-      resForm.reservation_date>=today() &&
-      dateObj.getDay()!== 2
+      !resInThePast() &&
+      dateObj.getDay()!== 2 &&
+      !resBefore1030Logic() &&
+      !resAfter2130Logic()
     )
   }
 
-  function resOnTuesday(){
-    return <p className="alert alert-danger">We are closed Tuesdays. Please pick another day.</p>
+  // alert messages and logic
+  const resOnTuesdayMess = <p className="alert alert-danger">We are closed Tuesdays. Please pick another day.</p>;
+
+  const resInPastMess = <p className="alert alert-danger">Cannot pick a reservation date or time before now.</p>;
+
+  const resBefore1030Mess = <p className="alert alert-danger">Cannot make a reservation before 10:30am</p>;
+
+  const resAfter2130Mess = <p className="alert alert-danger">We close at 10:30pm. Cannot make a reservation after 9:30pm.</p>;
+
+  function resBefore1030Logic(){
+    if(dateObj.getUTCHours()<10){return true};
+    if(dateObj.getUTCHours()<=10 && dateObj.getUTCMinutes()<30){return true};
+    return false;
   }
 
-  function resInPast(){
-    return <p className="alert alert-danger">Cannot pick a date before today.</p>
+  function resAfter2130Logic(){
+    if(dateObj.getUTCHours()>21){return true};
+    if(dateObj.getUTCHours()>=21 && dateObj.getUTCMinutes()>30){return true};
+    return false;
   }
 
-  
+  function resInThePast(){
+    let today = new Date();
+    if(dateObj.getTime()<today.getTime()){return true}
+  }
+
 
   return(
     <section>
-    <h3>New Reservation</h3>
-    <p>All fields are required.</p>
+      <h3>New Reservation</h3>
+      <p>All fields are required.</p>
       <form onSubmit={submitHandler}>
         <div className="form-row">
           <div className="form-group col-md-6">
@@ -91,11 +108,10 @@ function NewResForm(){
               className="form-control"
               id="first_name"
               name="first_name"
-              placeholder = "First name..."
+              placeholder="First name..."
               value={resForm.first_name}
               onChange={changeHandler}
               type="name"
-              required
             />
           </div>
           <br />
@@ -109,7 +125,6 @@ function NewResForm(){
               value={resForm.last_name}
               onChange={changeHandler}
               type="name"
-              required={true}
             />
           </div>
           <br />
@@ -135,14 +150,13 @@ function NewResForm(){
                 value={resForm.people}
                 onChange={changeHandler}
                 type="number"
-                required
               />
           </div>
           <br />
           <div className="form-group col-md-6">
             <label htmlFor="reservation_date">Pick a date for the reservation</label>
-            {dateObj.getDay()===2 ? resOnTuesday() : null}
-            {resForm.reservation_date<today() ? resInPast() : null}
+            {dateObj.getDay()===2 ? resOnTuesdayMess : null}
+            {resInThePast() && resForm.reservation_date!=="" ? resInPastMess : null}
             <input 
               className="form-control"
               id="reservation_date"
@@ -155,6 +169,8 @@ function NewResForm(){
           <br />
           <div className="form-group col-md-6">
             <label htmlFor="reservation_time">Pick a time for the reservation</label>
+            {resBefore1030Logic() ? resBefore1030Mess: null}
+            {resAfter2130Logic() ? resAfter2130Mess : null}
             <input 
               className="form-control"
               if="reservation_time"
@@ -167,10 +183,11 @@ function NewResForm(){
           </div>          
         </div>
       </form>
-      <div className="row pl-3 pr-3 justify-content-around">
-        <button type="submit" disabled={!validateBeforeSubmit()} className="btn btn-success" onClick={submitHandler}>Submit</button>
-        <button type="cancel" className="btn btn-danger" onClick={cancelHandler}>Cancel</button>
-      </div>
+      <SubmitCancelBtn 
+        validation={validateBeforeSubmit} 
+        submitHandler={submitHandler} 
+        cancelHandler={cancelHandler}
+      />
       <ErrorAlert error={resErrors} />
     </section>
   )

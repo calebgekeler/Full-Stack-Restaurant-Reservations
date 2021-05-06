@@ -14,7 +14,6 @@ async function list(req, res) {
 
 function validateBody(req, res, next){
   const body = req.body.data;
-  console.log("BODY IN API CONTROLLER", body)
   if(!body){
     next({
       status: 400,
@@ -108,8 +107,6 @@ function validateDateIsFuture(req, res, next){
     -${today.getMonth()+1 < 10 ? `0${today.getMonth()+1}` : today.getMonth()+1}
     -${today.getDate()<10 ? `0${today.getDate()}` : today.getDate()}`;
 
-  console.log("TODAY FORMATTED" ,todayAsStr);
-  console.log("DATE OF RESERVATION", date);
   if(date < todayAsStr){
     next({
       status: 400,
@@ -132,6 +129,24 @@ function validateNotTues(req, res, next){
   next();
 }
 
+function validateEligibleTime(req, res, next){
+  const time = req.body.data.reservation_time;
+  let [hours, minutes, seconds] = time.split(":");
+  if(Number(hours)<10 || Number(hours)<=10 && Number(minutes)<30){
+    next({
+      status: 400,
+      message: `We open at 10:30am.`
+    })
+  }
+  if(Number(hours)>21 || Number(hours)>=21 && Number(minutes)>30){
+    next({
+      status: 400,
+      message: `We close at 10:30pm. Cannot make a reservation before 9:30pm.`
+    })
+  }
+  next();
+}
+
 async function create(req, res){
   const reservation = req.body.data;
   const result = await service.create(reservation);
@@ -149,6 +164,7 @@ module.exports = {
     validatePeople,
     validateDateIsFuture,
     validateNotTues,
+    validateEligibleTime,
     create
   ],
   list,
