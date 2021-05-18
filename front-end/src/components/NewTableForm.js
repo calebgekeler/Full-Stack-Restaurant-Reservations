@@ -1,20 +1,24 @@
 import React, {useState} from 'react';
 import SubmitCancelBtn from './SubmitCancelBtn';
 import {useHistory} from "react-router-dom";
+import {createTable} from "../utils/api";
 
 export default function NewTableForm(){
 
   const intitialFormData = {
     table_name: "",
-    capacity: 1
+    capacity: 0
   }
 
   const history = useHistory();
   
   let [tableForm, setTableForm] = useState({...intitialFormData});
 
-  const submitHandler = (e) =>{
+  const submitHandler = async (e) =>{
     e.preventDefault();
+    const abortController = new AbortController();
+    await createTable(tableForm, abortController.signal);
+    // post the new table
     history.push("/dashboard");
   }
 

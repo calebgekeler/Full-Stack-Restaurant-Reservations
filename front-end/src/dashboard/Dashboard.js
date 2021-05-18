@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import {useLocation} from "react-router-dom";
-import { listReservations } from "../utils/api";
+import { listReservations, listTables } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import ReservationDisplay from "./ReservationDisplay";
 import {previous, next, today} from "../utils/date-time";
+import TablesDisplay from "./TablesDisplay";
 
 
 /**
@@ -15,6 +16,8 @@ import {previous, next, today} from "../utils/date-time";
 function Dashboard({ defaultDate }) {
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
+  const [tables, setTables] = useState([]);
+  const [tablesError, setTablesError] = useState(null);
 
   let query = new URLSearchParams(useLocation().search);
 
@@ -24,12 +27,12 @@ function Dashboard({ defaultDate }) {
 
   const buttons = (
     <div className="row p-3 justify-content-around">
-      <button onClick={()=> setDate(previous(date))} name="previous" className="btn btn-outline-primary btn-lg">Previous Day</button>
+      <button onClick={()=> setDate(previous(date))} name="previous" className="btn btn-outline-secondary btn-lg">Previous Day</button>
       <button 
         onClick={()=> setDate(today())} 
         name="today" 
         className={defaultDate===date ? "btn btn-success btn-lg" : "btn btn-outline-success btn-lg"}>Today</button>
-      <button onClick={() => setDate(next(date))} name="next" className="btn btn-outline-primary btn-lg">Next Day</button>
+      <button onClick={() => setDate(next(date))} name="next" className="btn btn-outline-secondary btn-lg">Next Day</button>
     </div>
   )
   useEffect(loadDashboard, [date]);
@@ -40,6 +43,9 @@ function Dashboard({ defaultDate }) {
     listReservations( {date}, abortController.signal)
       .then(setReservations)
       .catch(setReservationsError);
+    listTables(abortController.signal)
+      .then(setTables)
+      .catch(setTablesError);
     return () => abortController.abort();
   }
 
@@ -51,8 +57,15 @@ function Dashboard({ defaultDate }) {
       </div>
       <ErrorAlert error={reservationsError} />
       {buttons}
-      <section className="col col-md-6">
-        <ReservationDisplay reservations={reservations}/>
+      <section className="row">
+        <div className="col col-md-6">
+          <h3 className="row justify-content-center">Reservations</h3>
+          <ReservationDisplay reservations={reservations}/>
+        </div>
+        <div className="col col-md-6">
+          <h3 className="row justify-content-center">Tables</h3>
+          <TablesDisplay tables={tables}/>
+        </div>
       </section>
     </main>
   );

@@ -12,9 +12,26 @@ async function list(req, res) {
   });
 }
 
+async function reservationExists(req, res, next){
+  const {reservation_id} = req.params;
+  const reservation = await service.read(reservation_id);
+  if(reservation.length===0){
+    next({
+      status: 400,
+      message: `Reservation does not exist.`
+    })
+  }
+  res.locals.reservation = reservation;
+  next();
+}
+
+function read(req, res){
+  res.json({data: res.locals.reservation});
+}
+
 function validateBody(req, res, next){
   const body = req.body.data;
-  if(!body){
+  if(!body){z
     next({
       status: 400,
       message: `body is invalid`
@@ -154,6 +171,8 @@ async function create(req, res){
 }
 
 module.exports = {
+  list,
+  read: [reservationExists, read],
   create: [
     validateBody, 
     validateFirstName, 
@@ -167,5 +186,4 @@ module.exports = {
     validateEligibleTime,
     create
   ],
-  list,
 };
