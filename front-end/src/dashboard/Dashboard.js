@@ -17,7 +17,7 @@ function Dashboard({ defaultDate }) {
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
   const [tables, setTables] = useState([]);
-  const [tablesError, setTablesError] = useState(null);
+  //const [tablesError, setTablesError] = useState(null);
 
   let query = new URLSearchParams(useLocation().search);
 
@@ -35,6 +35,7 @@ function Dashboard({ defaultDate }) {
       <button onClick={() => setDate(next(date))} name="next" className="btn btn-outline-secondary btn-lg">Next Day</button>
     </div>
   )
+
   useEffect(loadDashboard, [date]);
 
   function loadDashboard() {
@@ -45,10 +46,10 @@ function Dashboard({ defaultDate }) {
       .catch(setReservationsError);
     listTables(abortController.signal)
       .then(setTables)
-      .catch(setTablesError);
+      //.catch(setTablesError);
     return () => abortController.abort();
   }
-
+  
   return (
     <main>
       <h1>Dashboard</h1>
@@ -60,11 +61,11 @@ function Dashboard({ defaultDate }) {
       <section className="row">
         <div className="col col-md-6">
           <h3 className="row justify-content-center">Reservations</h3>
-          <ReservationDisplay reservations={reservations}/>
+          <ReservationDisplay loadDashboard={loadDashboard} reservations={reservations}/>
         </div>
         <div className="col col-md-6">
           <h3 className="row justify-content-center">Tables</h3>
-          <TablesDisplay tables={tables}/>
+          <TablesDisplay loadDashboard={loadDashboard} tables={tables}/>
         </div>
       </section>
     </main>

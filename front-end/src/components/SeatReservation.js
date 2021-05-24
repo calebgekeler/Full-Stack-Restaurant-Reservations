@@ -29,8 +29,7 @@ export default function SeatReservation(){
   const cancelHandler = () =>{
     history.goBack();
   }
-  console.log("TABLE", table);
-  console.log("RESERVATION", reservation);
+  
   function validation(){
     return reservation.people <= table.capacity;
   }
@@ -39,7 +38,6 @@ export default function SeatReservation(){
     e.preventDefault();
     const abortController = new AbortController();
     await seatResToTable(reservations_id, table.table_id, abortController.signal);
-    // put the reservation id into the tables database
     history.push("/dashboard");
   }
 

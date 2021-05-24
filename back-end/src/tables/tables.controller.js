@@ -15,8 +15,8 @@ async function tableExists(req, res, next){
   const table = await service.read(table_id);
   if(!table){
     next({
-      status: 400,
-      message: `That table does not exist`
+      status: 404, //this was changed to 404 to pass us-05
+      message: `Table ${table_id} does not exist`
     })
   }
   res.locals.table = table;
@@ -114,18 +114,58 @@ function tableIsBigEnough(req, res, next){
   next();
 }
 
-async function update(req, res, next){
+function validateTableIsNotSeated(req, res, next){
+  if(res.locals.reservation.status==="seated"){
+    next({
+      status: 400,
+      message :`reservation is already seated`
+    })
+  }
+  next();
+}
+
+async function seatResToTable(req, res){
+  // adds the reservation_id to the table to "seat the table"
+  // from this function, need to change the status of the reservation to "seated"
   const { table: { reservation_id: resId, ...table }} = res.locals;
+  const reservationId = res.locals.reservation.reservation_id;
   const updatedTable = {...table, ...req.body.data};
-  // console.log("UPDATED TABLE IN TABLE CONTROLLER", updatedTable)
-  // console.log("TABLE ID", res.locals.table.table_id);
-  const data = await service.update(res.locals.table.table_id, updatedTable);
-  res.json({data});
+  const data = await service.update(res.locals.table.table_id, updatedTable, reservationId);
+  __changeResStatus("seated", reservationId, res.locals.reservation);
+  
+  res.status(200).json({data});
+}
+
+async function tableIsNotOccupied(req, res, next){
+  const tableId = req.params.table_id;
+  const table = await service.read(tableId);
+  if(table.reservation_id===null){
+    return next({
+      status: 400,
+      message: `the table is not occupied`
+    });
+  }
+  res.locals.table = table;
+  next();
+}
+
+async function unassignTable(req, res, next){
+  const tableId = req.params.table_id;
+  const result = await service.unassign(tableId);
+  const resId = res.locals.table.reservation_id;
+  const reservation = await resService.read(resId);
+  await __changeResStatus("finished", resId, reservation)
+  res.status(200).json({data: result});
+}
+
+async function __changeResStatus(newStatus, id, res){
+  return await resService.updateStatus(id, {...res, status: newStatus});
 }
 
 module.exports = {
   list: [errorCatcher(list)],
   read: [tableExists, errorCatcher(read)],
   create: [bodyHasData, bodyHasTableName, bodyHasCapacity, errorCatcher(create)],
-  update: [tableExists, bodyHasData, bodyHasResId, tableIsOccupided, resExists, tableIsBigEnough, errorCatcher(update)]
+  update: [tableExists, bodyHasData, bodyHasResId, tableIsOccupided, resExists, tableIsBigEnough, validateTableIsNotSeated, errorCatcher(seatResToTable)],
+  unassign: [tableExists, tableIsNotOccupied, errorCatcher(unassignTable)]
 }

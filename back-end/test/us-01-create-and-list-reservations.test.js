@@ -61,6 +61,7 @@ describe("US-01 - Create and list reservations", () => {
         reservation_date: "2025-01-01",
         reservation_time: "13:30",
         people: 1,
+        status: "booked",
       };
 
       const response = await request(app)
@@ -80,6 +81,7 @@ describe("US-01 - Create and list reservations", () => {
         reservation_date: "2025-01-01",
         reservation_time: "13:30",
         people: 1,
+        status: "booked",
       };
 
       const response = await request(app)
@@ -98,6 +100,7 @@ describe("US-01 - Create and list reservations", () => {
         reservation_date: "2025-01-01",
         reservation_time: "13:30",
         people: 1,
+        status: "booked",
       };
 
       const response = await request(app)
@@ -117,6 +120,7 @@ describe("US-01 - Create and list reservations", () => {
         reservation_date: "2025-01-01",
         reservation_time: "13:30",
         people: 1,
+        status: "booked",
       };
 
       const response = await request(app)
@@ -135,6 +139,7 @@ describe("US-01 - Create and list reservations", () => {
         reservation_date: "2025-01-01",
         reservation_time: "13:30",
         people: 1,
+        status: "booked",
       };
 
       const response = await request(app)
@@ -154,6 +159,7 @@ describe("US-01 - Create and list reservations", () => {
         reservation_date: "2025-01-01",
         reservation_time: "13:30",
         people: 1,
+        status: "booked",
       };
 
       const response = await request(app)
@@ -172,6 +178,7 @@ describe("US-01 - Create and list reservations", () => {
         mobile_number: "800-555-1212",
         reservation_time: "13:30",
         people: 1,
+        status: "booked",
       };
 
       const response = await request(app)
@@ -191,6 +198,7 @@ describe("US-01 - Create and list reservations", () => {
         reservation_date: "",
         reservation_time: "13:30",
         people: 1,
+        status: "booked",
       };
 
       const response = await request(app)
@@ -210,6 +218,7 @@ describe("US-01 - Create and list reservations", () => {
         reservation_date: "not-a-date",
         reservation_time: "13:30",
         people: 1,
+        status: "booked",
       };
 
       const response = await request(app)
@@ -228,6 +237,7 @@ describe("US-01 - Create and list reservations", () => {
         mobile_number: "800-555-1212",
         reservation_date: "2025-01-01",
         people: 1,
+        status: "booked",
       };
 
       const response = await request(app)
@@ -266,6 +276,7 @@ describe("US-01 - Create and list reservations", () => {
         reservation_date: "2025-01-01",
         reservation_time: "not-a-time",
         people: 1,
+        status: "booked",
       };
 
       const response = await request(app)
@@ -284,6 +295,7 @@ describe("US-01 - Create and list reservations", () => {
         mobile_number: "800-555-1212",
         reservation_date: "2025-01-01",
         reservation_time: "17:30",
+        status: "booked",
       };
 
       const response = await request(app)
@@ -303,6 +315,7 @@ describe("US-01 - Create and list reservations", () => {
         reservation_date: "2025-01-01",
         reservation_time: "17:30",
         people: 0,
+        status: "booked",
       };
 
       const response = await request(app)
@@ -322,6 +335,7 @@ describe("US-01 - Create and list reservations", () => {
         reservation_date: "2025-01-01",
         reservation_time: "17:30",
         people: "2",
+        status: "booked",
       };
 
       const response = await request(app)
@@ -341,6 +355,7 @@ describe("US-01 - Create and list reservations", () => {
         reservation_date: "2025-01-01",
         reservation_time: "17:30",
         people: 2,
+        status: "booked",
       };
 
       const response = await request(app)
@@ -357,6 +372,7 @@ describe("US-01 - Create and list reservations", () => {
           reservation_date: expect.stringContaining("2025-01-01"),
           reservation_time: expect.stringContaining("17:30"),
           people: 2,
+          status: "booked",
         })
       );
       expect(response.status).toBe(201);

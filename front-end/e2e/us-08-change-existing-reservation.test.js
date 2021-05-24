@@ -31,6 +31,7 @@ describe("US-08 - Change an existing reservation - E2E", () => {
       reservation_date: "2035-01-04",
       reservation_time: "14:00",
       people: 4,
+      status:"booked",
     });
     page = await browser.newPage();
     await page.setViewport({ width: 1920, height: 1080 });

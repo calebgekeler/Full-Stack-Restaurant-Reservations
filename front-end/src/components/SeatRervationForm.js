@@ -8,7 +8,7 @@ export default function SeatReservationForm({setTable, tables, idToPut, setIdToP
   ))
   const changeHandler = (e) =>{
     setIdToPut(e.target.value);
-    setTable(tables.find(table=>table.table_id==e.target.value));
+    setTable(tables.find(table=>table.table_id===Number(e.target.value)));
   }
   
   const selectMenu = (

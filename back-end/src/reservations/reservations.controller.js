@@ -3,22 +3,29 @@
  */
 const service = require("./reservations.service");
 
-async function list(req, res) {
+async function list(req, res, next) {
   const date = req.query.date;
+  if(!date){
+    return next();
+  }
   const result = await service.list(date);
   const sortedResult = result.sort((a, b) => a.reservation_time > b.reservation_time ? 1 : -1);
-  res.json({
-    data: sortedResult,
-  });
+  res.json({data: sortedResult});
+}
+
+async function search(req, res){
+  const phoneNum = req.query.mobile_number;
+  const result = await service.search(phoneNum);
+  res.json({data: result})
 }
 
 async function reservationExists(req, res, next){
   const {reservation_id} = req.params;
   const reservation = await service.read(reservation_id);
-  if(reservation.length===0){
+  if(!reservation){
     next({
-      status: 400,
-      message: `Reservation does not exist.`
+      status: 404,
+      message: `Reservation ${reservation_id} does not exist.`
     })
   }
   res.locals.reservation = reservation;
@@ -31,7 +38,7 @@ function read(req, res){
 
 function validateBody(req, res, next){
   const body = req.body.data;
-  if(!body){z
+  if(!body){
     next({
       status: 400,
       message: `body is invalid`
@@ -88,8 +95,6 @@ function validateResDate(req, res,  next){
   }
   next();
 }
-
-
 
 function validateResTime(req, res, next){
   const time = req.body.data.reservation_time;
@@ -164,14 +169,60 @@ function validateEligibleTime(req, res, next){
   next();
 }
 
+function validateOnlyBooked(req, res, next){
+  const status = req.body.data.status;
+  if(status!=="booked"){
+    next({
+      status: 400,
+      message: `Creating a reservation must have the "booked" status, not the "${status}" status.`
+    })
+  }
+  next();
+}
+
 async function create(req, res){
   const reservation = req.body.data;
   const result = await service.create(reservation);
   res.status(201).json({data: result})
 }
 
+function validateAcceptableStatus(req, res, next){
+  const acceptableStatuses = ["booked", "seated", "finished", "cancelled"];
+  const status = req.body.data.status;
+  if(!acceptableStatuses.includes(status)){
+    next({
+      status: 400,
+      message: `Status, ${status}, is not acceptable`
+    })
+  }
+  next();
+}
+
+function validateCurrentStatusIsNotFinished(req, res, next){
+  if(res.locals.reservation.status==="finished"){
+    next({
+      status: 400,
+      message: `Current status is already finished. Cannot update`
+    })
+  }
+  next();
+}
+
+async function updateStatus(req, res, next){
+  const status = req.body.data.status;
+  const updatedRes = {...res.locals.reservation, status};
+  const data = await service.updateStatus(res.locals.reservation.reservation_id, updatedRes);
+  res.status(200).json({data});
+}
+
+async function updateReservation(req, res, next){
+  const reservation = req.body.data;
+  const resBackFromService = await service.updateReservation(reservation);
+  res.json({data: resBackFromService});
+}
+
 module.exports = {
-  list,
+  list: [list, search],
   read: [reservationExists, read],
   create: [
     validateBody, 
@@ -184,6 +235,24 @@ module.exports = {
     validateDateIsFuture,
     validateNotTues,
     validateEligibleTime,
+    validateOnlyBooked,
     create
   ],
+  updateStatus: [
+    reservationExists, 
+    validateAcceptableStatus, 
+    validateCurrentStatusIsNotFinished,
+    updateStatus
+  ],
+  edit: [
+    reservationExists,
+    validateBody, 
+    validateFirstName, 
+    validateLastName, 
+    validateMobile, 
+    validateResDate,
+    validateResTime,
+    validatePeople,
+    updateReservation,
+  ]
 };

@@ -37,6 +37,7 @@ describe("US-05 - Finish an occupied table - E2E", () => {
         reservation_date: "2035-01-01",
         reservation_time: "13:45",
         people: 4,
+        status: "booked"
       });
 
       table = await createTable({

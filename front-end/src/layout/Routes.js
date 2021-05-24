@@ -6,7 +6,9 @@ import NotFound from "./NotFound";
 import { today } from "../utils/date-time";
 import NewResForm from "../components/NewResForm";
 import NewTableForm from "../components/NewTableForm";
-import SeatReservation from "../components/SeatReservation"
+import SeatReservation from "../components/SeatReservation";
+import Search from "../components/Search";
+import EditResForm from "../components/EditResForm"
 
 /**
  * Defines all the routes for the application.
@@ -27,7 +29,7 @@ function Routes() {
       <Route path="/dashboard">
         <Dashboard defaultDate={today()} />
       </Route>
-      <Route path="/reservations/new">
+      <Route path="/reservations/new" exact>
         <NewResForm defaultDate = {today()}/>
       </Route>
       <Route path="/tables/new">
@@ -35,6 +37,12 @@ function Routes() {
       </Route>
       <Route path="/reservations/:reservations_id/seat" exact>
         <SeatReservation />
+      </Route>
+      <Route path="/search" exact>
+        <Search />
+      </Route>
+      <Route path="/reservations/:reservations_id/edit" exact>
+        <EditResForm />
       </Route>
       <Route>
         <NotFound />
