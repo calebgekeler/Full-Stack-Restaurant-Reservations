@@ -60,7 +60,7 @@ function NewResForm(){
     return(
       resForm.first_name.length!==0 &&
       resForm.last_name.length!==0 &&
-      resForm.mobile_number.length!==0 &&
+      resForm.mobile_number.length===10 &&
       resForm.reservation_date.length!==0 &&
       resForm.reservation_time.length!==0 &&
       resForm.people > 0 &&

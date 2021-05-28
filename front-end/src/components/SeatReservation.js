@@ -59,18 +59,20 @@ export default function SeatReservation(){
   )
   
   return(
-    <section>
-      <div className="row">
-        <div className="col-3">
-          <h3>Seat reservation: </h3>
-          {resCard}
-        </div>
-        <div className="col-9">
+    <section className="container">
+      <div className="row justify-content-center">
+        <div className="col-md-8 col-10">
           <SeatReservationForm 
             setTable={setTable} 
             tables={tables} 
             idToPut={idToPut} 
             setIdToPut={setIdToPut}/>
+        </div>
+      </div>
+      <div className="row justify-content-center">
+        <div className="col-md-8 col-10">
+          <h3>Seat reservation: </h3>
+          {resCard}
         </div>
       </div>
       <div className="pt-3">

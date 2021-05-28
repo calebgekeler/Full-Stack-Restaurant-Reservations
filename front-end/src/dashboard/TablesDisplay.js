@@ -24,7 +24,7 @@ export default function TablesDisplay({tables, loadDashboard}){
           <p className="card-text">Table name: {table.table_name}</p>
           <p className="card-text">Table capacity: {table.capacity}</p>
           <p className="card-text">Reservation ID: {table.reservation_id}</p>
-          {!occupiedLogic(table) ? <button onClick={()=>unseatTable(table)} data-table-id-finish={table.table_id} className="btn btn-danger btn-sm">Finish</button> : null}
+          <button onClick={()=>unseatTable(table)} data-table-id-finish={table.table_id} className="btn btn-danger btn-sm" disabled={occupiedLogic(table)}>Finish</button>
         </div>
       </div>
     </div>

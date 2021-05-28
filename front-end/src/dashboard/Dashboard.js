@@ -5,6 +5,7 @@ import ErrorAlert from "../layout/ErrorAlert";
 import ReservationDisplay from "./ReservationDisplay";
 import {previous, next, today} from "../utils/date-time";
 import TablesDisplay from "./TablesDisplay";
+import * as Icon from 'react-bootstrap-icons';
 
 
 /**
@@ -27,12 +28,12 @@ function Dashboard({ defaultDate }) {
 
   const buttons = (
     <div className="row p-3 justify-content-around">
-      <button onClick={()=> setDate(previous(date))} name="previous" className="btn btn-outline-secondary btn-lg">Previous Day</button>
+      <button onClick={()=> setDate(previous(date))} name="previous" className="btn btn-outline-secondary btn-lg">Previous</button>
       <button 
         onClick={()=> setDate(today())} 
         name="today" 
         className={defaultDate===date ? "btn btn-success btn-lg" : "btn btn-outline-success btn-lg"}>Today</button>
-      <button onClick={() => setDate(next(date))} name="next" className="btn btn-outline-secondary btn-lg">Next Day</button>
+      <button onClick={() => setDate(next(date))} name="next" className="btn btn-outline-secondary btn-lg">Next</button>
     </div>
   )
 
@@ -54,14 +55,14 @@ function Dashboard({ defaultDate }) {
     <main>
       <h1>Dashboard</h1>
       <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Reservations for date: {date}</h4>
+        <h4 className="mb-0"><Icon.CalendarDate/> {date}</h4>
       </div>
       <ErrorAlert error={reservationsError} />
       {buttons}
       <section className="row">
         <div className="col col-md-6">
           <h3 className="row justify-content-center">Reservations</h3>
-          <ReservationDisplay loadDashboard={loadDashboard} reservations={reservations}/>
+          <ReservationDisplay refresh={loadDashboard} reservations={reservations}/>
         </div>
         <div className="col col-md-6">
           <h3 className="row justify-content-center">Tables</h3>

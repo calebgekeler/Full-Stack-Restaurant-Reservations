@@ -8,22 +8,14 @@ export default function Search(){
   let [searchNum, setSearchNum] = useState("");
   let [noReservation, setNoReservation] = useState(false);
   let [errors, setErrors] = useState(null);
+  const abortController = new AbortController();
 
   const changeHandler = (e) =>{
-    // if(!isNaN(e.target.value)){
-    //   setSearchNum(e.target.value);
-    // }
-    // else{
-    //   alert("Only numbers are allowed")
-    // }
     setSearchNum(e.target.value);
-
   }
 
-  const submitHandler = async (e) =>{
-    e.preventDefault();
-    const abortController = new AbortController();
-    await searchMobileNumber(searchNum, abortController.signal)
+  async function loadResults(){
+    return await searchMobileNumber(searchNum, abortController.signal)
       .then(reservationsArray =>{
         setReservations(reservationsArray)
         if(reservationsArray.length===0){
@@ -33,6 +25,11 @@ export default function Search(){
         }
       })
       .catch(setErrors);
+    }
+
+  const submitHandler = async (e) =>{
+    e.preventDefault();
+    loadResults();
   }
 
   let searchInput = (
@@ -56,16 +53,19 @@ export default function Search(){
   const noResMessage = <h3>No reservations found</h3>
 
   return(
-    <div className="row">
-      <div className="col-md-6 pt-5">
-        {searchInput}
-        <ErrorAlert error={errors} />
+    <div className="container">
+      <div className="row justify-content-center">
+        <div className="col-md-9 pt-5">
+          {searchInput}
+          <ErrorAlert error={errors} />
+        </div>
       </div>
-      <div className="col-md-6">
-        <h2>Matching Reservations</h2>
-        <ReservationDisplay reservations={reservations} />
-        {noReservation ? noResMessage : null}
-
+      <div className="row justify-content-center">
+        <div className="col-md">
+          <h2>Matching Reservations</h2>
+          <ReservationDisplay refresh={loadResults} reservations={reservations} />
+          {noReservation ? noResMessage : null}
+        </div>
       </div>
     </div>
   )

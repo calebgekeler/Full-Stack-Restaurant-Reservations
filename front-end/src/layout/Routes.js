@@ -8,7 +8,8 @@ import NewResForm from "../components/NewResForm";
 import NewTableForm from "../components/NewTableForm";
 import SeatReservation from "../components/SeatReservation";
 import Search from "../components/Search";
-import EditResForm from "../components/EditResForm"
+import EditResForm from "../components/EditResForm";
+import Login from "../dashboard/Login";
 
 /**
  * Defines all the routes for the application.
@@ -20,6 +21,9 @@ import EditResForm from "../components/EditResForm"
 function Routes() {
   return (
     <Switch>
+      <Route to="/login" exact>
+        <Login />
+      </Route>
       <Route exact={true} path="/">
         <Redirect to={"/dashboard"} />
       </Route>
