@@ -10,6 +10,10 @@ This app was designed for restaurant backends. It allows the user to create rese
 
 Bootstrap was used for styling
 
+Postgres was used for the database with Knex as the JS query builder.
+
+API is built with Express and follows CRUD practices.
+
 Authentication and authorization are coming soon!
 
 Further TODOs can be found in issues. 
