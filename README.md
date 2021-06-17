@@ -1,6 +1,5 @@
 # Full-Stack Restaurant Reservation System
-## [Prod build frontend](https://front-end-nine-alpha.vercel.app)
-## [Pord build backend](https://back-end-wine.vercel.app/reservations?date=2021-05-05)
+## [The full build!](https://front-end-nine-alpha.vercel.app)
 
 This app was designed for restaurant backends. It allows the user to create reservations and tables in a restaurant. Reservations can be:
 - cancelled
