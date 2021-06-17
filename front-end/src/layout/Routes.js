@@ -1,5 +1,4 @@
 import React from "react";
-
 import { Redirect, Route, Switch } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";
 import NotFound from "./NotFound";
@@ -21,7 +20,7 @@ import Login from "../dashboard/Login";
 function Routes() {
   return (
     <Switch>
-      <Route to="/login" exact>
+      <Route path="/login" exact>
         <Login />
       </Route>
       <Route exact={true} path="/">

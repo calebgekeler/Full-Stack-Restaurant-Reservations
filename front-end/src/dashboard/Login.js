@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 
 export default function Login(){
-  let [userName, setUserName] = useState("");
-  let [password, setPassword] = useState("");
+  let [userName] = useState("");
+  //let [password, setPassword] = useState("");
   const loginForm = (
     <form>
       <div className="form-row">

@@ -80,3 +80,8 @@ export function next(currentDate) {
   date.setDate(date.getDate() + 1);
   return asDateString(date);
 }
+
+export function resTimeFormat(time){
+  const [hours, minutes] = time.split(":");
+  return `${hours < 13 ? hours : hours-12}:${minutes} ${hours<13 ? "am" : "pm"}`
+}

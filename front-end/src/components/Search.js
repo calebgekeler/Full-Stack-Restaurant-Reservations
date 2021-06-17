@@ -50,7 +50,7 @@ export default function Search(){
     </form>
   )
 
-  const noResMessage = <h3>No reservations found</h3>
+  const noResMessage = <h3 className="alert alert-danger">No reservations found</h3>
 
   return(
     <div className="container">
@@ -61,8 +61,7 @@ export default function Search(){
         </div>
       </div>
       <div className="row justify-content-center">
-        <div className="col-md">
-          <h2>Matching Reservations</h2>
+        <div className="col-md-9 col-12">
           <ReservationDisplay refresh={loadResults} reservations={reservations} />
           {noReservation ? noResMessage : null}
         </div>

@@ -2,6 +2,7 @@ import React from 'react-router-dom';
 import {Link} from 'react-router-dom';
 import {cancelReservation} from '../utils/api';
 import * as Icon from 'react-bootstrap-icons';
+import {resTimeFormat} from '../utils/date-time';
 
 function ReservationDisplay({refresh, reservations}){
   
@@ -27,21 +28,22 @@ function ReservationDisplay({refresh, reservations}){
 
   function cardBorder(status){
     if(status==="booked"){
-      return `card border-primary bg-light`
+      return `border-primary`
     }
     if(status==="seated"){
-      return `card border-success bg-light`
+      return `border-success`
     }
-  }
-
-  function resTimeFormat(time){
-    const [hours, minutes] = time.split(":");
-    return `${hours < 13 ? hours : hours-12}:${minutes} ${hours<13 ? "am" : "pm"}`
+    if(status==="cancelled"){
+      return `border-danger`
+    }
+    if(status==="finished"){
+      return `border-warning`
+    }
   }
 
   const resCards = reservations.map((res) =>
     <div key={res.reservation_id} className="col-lg-6 p-3">
-      <div className={cardBorder(res.status)}>
+      <div className={`card ${cardBorder(res.status)} bg-light`}>
         <div className="card-body">
           <h5 data-reservation-id-status={res.reservation_id} className="card-title">{statusDisplay(res.status)}</h5>
           <Icon.Person size={20}/>
@@ -50,9 +52,11 @@ function ReservationDisplay({refresh, reservations}){
           <p className="card-text">{res.mobile_number}</p>
           <Icon.Clock size={20}/>
           <p className="card-text">{resTimeFormat(res.reservation_time)}</p>
+          <Icon.CalendarCheck size={20} />
+          <p className="card-text">{res.reservation_date}</p>
           <p className="card-text">Reservation ID: {res.reservation_id}</p>
           <div className="row justify-content-around">
-            <Link to={`/reservations/${res.reservation_id}/seat`}><button className="btn btn-primary btn-sm" disabled={btnDisabled(res.status)}>Seat</button></Link>
+            <Link to={`/reservations/${res.reservation_id}/seat`}><button className="btn btn-primary btn-sm" disabled={btnDisabled(res.status)}><Icon.PersonCheck size={20} /></button></Link>
             <Link to={`/reservations/${res.reservation_id}/edit`}><button className="btn btn-secondary btn-sm" disabled={btnDisabled(res.status)}><Icon.Pencil size={20}/></button></Link>
             <button disabled={btnDisabled(res.status)} onClick={()=>cancelRes(res.reservation_id)} data-reservation-id-cancel={res.reservation_id} className="btn btn-danger btn-sm"><Icon.XCircle size={20}/></button>
           </div>

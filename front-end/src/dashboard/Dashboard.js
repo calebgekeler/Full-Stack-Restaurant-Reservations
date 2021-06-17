@@ -52,10 +52,15 @@ function Dashboard({ defaultDate }) {
   }
   
   return (
-    <main>
-      <h1>Dashboard</h1>
-      <div className="d-md-flex mb-3">
-        <h4 className="mb-0"><Icon.CalendarDate/> {date}</h4>
+    <main className="container">
+      <div className="row justify-content-center alert alert-success mt-3">
+        <div>
+          <h2>Dashboard</h2>
+          <hr/>
+          <div>
+            <h4 className="mb-0"><Icon.Calendar3/> {date}</h4>
+          </div>
+        </div>
       </div>
       <ErrorAlert error={reservationsError} />
       {buttons}

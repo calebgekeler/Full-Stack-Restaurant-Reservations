@@ -89,19 +89,27 @@ function NewResForm(){
   }
 
   return(
-    <section>
-      <h3>New Reservation</h3>
-      <p>All fields are required.</p>
-      <ReservationForm 
-        submitHandler={submitHandler}
-        changeHandler={changeHandler}
-        resForm={resForm}
-        dateObj={dateObj}
-      />
+    <section className="container">
+      <div className="row justify-content-center alert alert-primary mt-3">
+        <div>
+          <h3>New Reservation</h3>
+          <hr/>
+          <p>All fields are required.</p>
+        </div>
+      </div>
+
+      <div className="row">
+        <ReservationForm 
+          submitHandler={submitHandler}
+          changeHandler={changeHandler}
+          resForm={resForm}
+          dateObj={dateObj}
+        />
+      </div>
       <SubmitCancelBtn 
-        validation={validateBeforeSubmit} 
-        submitHandler={submitHandler} 
-        cancelHandler={cancelHandler}
+          validation={validateBeforeSubmit} 
+          submitHandler={submitHandler} 
+          cancelHandler={cancelHandler}
       />
       <ErrorAlert error={resErrors} />
     </section>
